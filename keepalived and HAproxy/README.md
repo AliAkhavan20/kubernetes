@@ -1,4 +1,4 @@
-!!This Document Helps you to install a Multi-Master kubernetes with HA and Keepalived in linux-ubuntu!!
+!!install a Multi-Master kubernetes with HA and Keepalived in linux-ubuntu!!
 ----------------------------------------------------
 # Update and Install keepalived and haproxy
 
