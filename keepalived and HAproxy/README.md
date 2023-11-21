@@ -1,15 +1,18 @@
-!!install a Multi-Master kubernetes with HA and Keepalived in linux-ubuntu!!
-----------------------------------------------------
+# Install a Multi-Master kubernetes with HA and Keepalived in ubuntu
 
-!!!Update and Install keepalived and haproxy
+## Setup Keepalived nodes
 
-apt update && apt install -y keepalived haproxy
+### Update and Install keepalived
+```
+apt update && apt install -y keepalived
+```
 
-Create and Edit keepalived config 
-Noted that this configuration must be installed on every ha-machine with a slightly difference.
-
+### Create and Edit keepalived config
+#### Noted that this configuration must be installed on every ha-machine with a slightly difference.
+```
 nano /etc/keepalived/keepalived.conf
-
+```
+```
 global_defs {
   notification_email {
   }
@@ -28,42 +31,50 @@ vrrp_script chk_haproxy {
 vrrp_instance haproxy-vip {
   state BACKUP
   priority 100
-  interface ens33                       # Change Network interface based on your configuration
+  interface ens33                          # Change Network interface based on your configuration
   virtual_router_id 60
   advert_int 1
   authentication {
     auth_type PASS
     auth_pass 1111
   }
-  unicast_src_ip 192.168.74.204      # putt The IP address of this machine
+  unicast_src_ip 192.168.74.204            # putt The IP address of this machine
   unicast_peer {
     192.168.74.205                         # putt The IP address of peer machines
   }
 
   virtual_ipaddress {
-    192.168.74.210/24                  # The VIP address
+    192.168.74.210/24                      # The VIP address
   }
 
   track_script {
     chk_haproxy
   }
 }
+```
+#### For the interface field, you must provide your own network interface type.
+#### Make sure you configure Keepalived on the other machines as well.
 
-# For the interface field, you must provide your own network card information.You can run ifconfig on your machine to get the value.
-# The IP address provided for unicast_src_ip is the IP address of your current machine. For other machines where HAproxy and Keepalived are also installed for load balancing, their IP address must be input for the field unicast_peer.
-# Save the file and run the following command to restart Keepalived.
-# Make sure you configure Keepalived on the other machines as well.
-----------------------------------------------------
-# Enable & start keepalived service
+### Enable & start keepalived service
+```
+systemctl enable --now keepalived.service
+```
+```
+systemctl start keepalived.service
+```
+## Setup haproxy nodes
 
-systemctl enable --now keepalived
-----------------------------------------------------
-# Configure haproxy after keepalived has been started successfully
-# Run and edit haproxy.cfg on every HA node and the configuration will be same on each node.
-# Dont forget to change the ip server addresses.
-
+### Update and Install haproxy
+```
+apt update && apt install -y haproxy
+```
+#### Configure haproxy after keepalived has been started successfully.
+#### Run and edit haproxy.cfg on every HA node and the configuration will be same on each node.
+#### Dont forget to change the ip server addresses.
+```
 nano /etc/haproxy/haproxy.cfg
-
+```
+```
 global
     log /dev/log  local0 warning
     chroot      /var/lib/haproxy
@@ -98,38 +109,23 @@ backend kube-apiserver
     server kube-apiserver-1 172.16.0.4:6443 check 	# Replace the IP address with your own.
     server kube-apiserver-2 172.16.0.5:6443 check 	# Replace the IP address with your own.
     server kube-apiserver-3 172.16.0.6:6443 check 	# Replace the IP address with your own.
+```
 
-----------------------------------------------------
-# Enable & Restart haproxy service
-
-systemctl enable haproxy 
+### Enable & Restart haproxy service
+```
+systemctl enable haproxy
+```
+```
 systemctl restart haproxy
-----------------------------------------------------
-Verify HA
+```
 
-# Before you start to create your Kubernetes cluster, make sure you have tested the high availability.
-# Now you have 1 VP for 3 or as many nodes as you want.the IP will be shift to the alive nodes in case of failure.
-# You can simply stop ha-proxy service by "systemctl stop haproxy" in one node and see if the virtual ip address has been shifted to another node.
-----------------------------------------------------
-#Now its time to install kubernetes cluster one by one
-after this 
-go config control-plane1
-go config calico cni
-after that join other masters to control-plane1
-one problem will cause and thats the masters will keep failing you should do this 
-Try adding:
+## Verify HA
 
-GRUB_CMDLINE_LINUX_DEFAULT="systemd.unified_cgroup_hierarchy=0"
-To your /etc/default/grub file and then run update-grub, reboot and see if that helps.
-----------------------------------------
-----------------------------------------
-----------------------------------------
+#### Before you start to create your Kubernetes cluster, make sure you have tested the high availability.
+#### Now you have 1 VP for 3 or as many nodes as you want.the IP will be shift to the alive nodes in case of failure.
+#### You can simply stop ha-proxy service by "systemctl stop haproxy" in one node and see if the virtual ip address has been shifted to another node.
 
-
-
-
-
-
+## install multi-master kubernetes cluster according to guidance in repo.
 
 
 
