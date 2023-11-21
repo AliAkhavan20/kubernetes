@@ -1,0 +1,108 @@
+The configuration of HAproxy is exactly the same on the two machines for load balancing. Run the following command to configure HAproxy.
+vi /etc/haproxy/haproxy.cfg
+
+2. Here is my configuration for your reference (Pay attention to the server field. Note that 6443 is the apiserver port):
+
+global
+    log /dev/log  local0 warning
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    daemon
+   
+   stats socket /var/lib/haproxy/stats
+   
+defaults
+  log global
+  option  httplog
+  option  dontlognull
+        timeout connect 5000
+        timeout client 50000
+        timeout server 50000
+   
+frontend kube-apiserver
+  bind *:6443
+  mode tcp
+  option tcplog
+  default_backend kube-apiserver
+   
+backend kube-apiserver
+    mode tcp
+    option tcplog
+    option tcp-check
+    balance roundrobin
+    default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
+    server kube-apiserver-1 172.16.0.4:6443 check # Replace the IP address with your own.
+    server kube-apiserver-2 172.16.0.5:6443 check # Replace the IP address with your own.
+    server kube-apiserver-3 172.16.0.6:6443 check # Replace the IP address with your own.
+3. Save the file and run the following command to restart HAproxy.
+
+systemctl restart haproxy
+
+4. Make it persist through reboots:
+
+systemctl enable haproxy
+
+5. Make sure you configure HAproxy on the other machine (lb2) as well.
+
+
+
+
+Verify HA
+Before you start to create your Kubernetes cluster, make sure you have tested the high availability.
+
+On the machine lb1, run the following command:
+[root@lb1 ~]# ip a s
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 52:54:9e:27:38:c8 brd ff:ff:ff:ff:ff:ff
+    inet 172.16.0.2/24 brd 172.16.0.255 scope global noprefixroute dynamic eth0
+       valid_lft 73334sec preferred_lft 73334sec
+    inet 172.16.0.10/24 scope global secondary eth0 # The VIP address
+       valid_lft forever preferred_lft forever
+    inet6 fe80::510e:f96:98b2:af40/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+2. As you can see above, the virtual IP address is successfully added. Simulate a failure on this node:
+
+systemctl stop haproxy
+
+3. Check the floating IP address again and you can see it disappear on lb1.
+
+[root@lb1 ~]# ip a s
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 52:54:9e:27:38:c8 brd ff:ff:ff:ff:ff:ff
+    inet 172.16.0.2/24 brd 172.16.0.255 scope global noprefixroute dynamic eth0
+       valid_lft 72802sec preferred_lft 72802sec
+    inet6 fe80::510e:f96:98b2:af40/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4. Theoretically, the virtual IP will be failed over to the other machine (lb2) if the configuration is successful. On lb2, run the following command and here is the expected output:
+
+[root@lb2 ~]# ip a s
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 52:54:9e:3f:51:ba brd ff:ff:ff:ff:ff:ff
+    inet 172.16.0.3/24 brd 172.16.0.255 scope global noprefixroute dynamic eth0
+       valid_lft 72690sec preferred_lft 72690sec
+    inet 172.16.0.10/24 scope global secondary eth0   # The VIP address
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f67c:bd4f:d6d5:1d9b/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+5. As you can see above, high availability is successfully configured.
