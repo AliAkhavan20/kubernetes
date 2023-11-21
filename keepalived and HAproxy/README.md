@@ -95,7 +95,7 @@ defaults
         timeout server 50000
    
 frontend kube-apiserver
-  bind *:6443                                        # Dont put any ip address here
+  bind *:6443                                          # Dont put any ip address here
   mode tcp
   option tcplog
   default_backend kube-apiserver
