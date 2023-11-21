@@ -1,12 +1,25 @@
-## Pre-requisites on all kubernetes nodes (masters & workers)
-##### Disable swap
+# Pre-requisites on all kubernetes nodes (masters & workers)
+### Disable swap
 ```
 swapoff -a; sed -i '/swap/d' /etc/fstab
 ```
-##### Disable Firewall
-```
-systemctl disable --now ufw
-```
+### Firewall ports needed
+
+The following TCP ports are used by Kubernetes control plane components:
+|PORTS|COMPONENTS|
+|----|----|
+|6443|Kubernetes API server|
+|2379-2380|etcd server client API|
+|10250|Kubelet API|
+|10259|kube-scheduler|
+|10257|kube-controller manager|
+
+The following TCP ports are used by Kubernetes nodes:
+|PORTS|COMPONENTS|
+|----|----|
+|10250|Kubelet API|
+|30000-32767|NodePort Services|
+
 ##### Enable and Load Kernel modules
 ```
 {
