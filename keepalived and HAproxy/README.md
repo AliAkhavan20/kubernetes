@@ -1,9 +1,16 @@
 !!install a Multi-Master kubernetes with HA and Keepalived in linux-ubuntu!!
 ----------------------------------------------------
+
+----------------------------------------------------
+
+
+
+
+
 # Update and Install keepalived and haproxy
 
 apt update && apt install -y keepalived haproxy
-----------------------------------------------------
+
 # Create and Edit keepalived config 
 # Noted that this configuration must be installed on every ha-machine with a slightly difference.
 
