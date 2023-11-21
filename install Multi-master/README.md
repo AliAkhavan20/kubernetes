@@ -71,8 +71,6 @@ sysctl --system
 kubeadm init --control-plane-endpoint="192.168.16.1:6443" --upload-certs --apiserver-advertise-address=192.168.16.2 --pod-network-cidr=10.10.0.0/16
 ```
 #### Noted that Control-plane-endpoint wil be the Virtual ip that has been made in Keepalived service
-#### there will be a masater join command at the end of cluster init Copy the commands to join other master nodes.
-#### Dont forget to use --api-advertise-address on each host for cluster joining
 
 ### Install Calico network
 ```
@@ -102,32 +100,19 @@ kubectl create -f custom-resources
 
 > IMPORTANT: Don't forget the --apiserver-advertise-address option to the join command when you join the other master nodes.
 
+## master Pod Failures
 
-
-
-
-
-
-----------------------------------------------------
-#Now its time to install kubernetes cluster one by one
-after this 
-go config control-plane1
-go config calico cni
-after that join other masters to control-plane1
-one problem will cause and thats the masters will keep failing you should do this 
-Try adding:
-
+> IMPORTANT: If other master pods keep failing add this to your host GRUB
+```
+nano /etc/default/grub
+```
+```
 GRUB_CMDLINE_LINUX_DEFAULT="systemd.unified_cgroup_hierarchy=0"
-To your /etc/default/grub file and then run update-grub, reboot and see if that helps.
-----------------------------------------
-----------------------------------------
-----------------------------------------
-
-
-
-
-
-
-
-
-
+```
+```
+update-grub
+```
+```
+reboot
+```
+Enjoy Your Multi Master Cluster,Dont forget to run haproxy and keepalived i put in the repo so you wont have any failure accross your cluster
