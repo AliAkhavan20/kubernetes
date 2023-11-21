@@ -125,7 +125,6 @@ systemctl restart haproxy
 #### Now you have 1 VP for 3 or as many nodes as you want.the IP will be shift to the alive nodes in case of failure.
 #### You can simply stop ha-proxy service by "systemctl stop haproxy" in one node and see if the virtual ip address has been shifted to another node.
 
-## install multi-master kubernetes cluster according to guidance in repo.
 
 
 
