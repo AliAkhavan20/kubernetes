@@ -3,4 +3,4 @@
 ```
 sudo tee /etc/bash_completion.d/kubectl > /dev/nulls
 ```
-## logout and login 
+> logout and login 
