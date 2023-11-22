@@ -1,6 +1,6 @@
 # install mettallb
 
-## mettallb uses for adding external ip into out services
+## mettallb uses for assigning external ip's to services
 ```
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-frr.yaml
