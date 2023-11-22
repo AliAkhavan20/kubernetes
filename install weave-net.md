@@ -3,7 +3,7 @@
 ```
 kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 ```
-### Once Weave is running in your cluster, you can interact with it by installing the Weave script on your nodes with these commands.
+> Once Weave is running in your cluster, you can interact with it by installing the Weave script on your nodes with these commands.
 ```
 sudo curl -L git.io/weave -o /usr/local/bin/weave
 ```
