@@ -1,4 +1,4 @@
-# To create a k8s service create .yaml file with below config
+# Creating kubernetes service
 ```
 apiVersion: v1
 kind: Service
