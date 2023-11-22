@@ -8,7 +8,7 @@ apt update && apt install -y keepalived
 ```
 
 ### Create and Edit keepalived config
-#### Noted that this configuration must be installed on every ha-machine with a slightly difference.
+> Noted that this configuration must be installed on every ha-machine with a slightly difference.
 ```
 nano /etc/keepalived/keepalived.conf
 ```
