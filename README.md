@@ -1,4 +1,4 @@
 # Kubernetes
 
-Kubernetes config files made by me.
+Kubernetes config files.
 add any useful file to repo
