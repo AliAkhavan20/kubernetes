@@ -1,5 +1,6 @@
-# To completely delete an entire Kubernetes cluster, you'll need to perform several steps depending on how the cluster was set up. The process may vary slightly based on the platform you used to create the cluster (e.g., a managed service like GKE, EKS, AKS, or a self-hosted cluster with kubeadm, kops, or another tool).
-# Below are generic steps you can follow. Please adjust them based on the specifics of your environment:
+# Wipe-out a kubernetes cluster
+To completely delete an entire Kubernetes cluster, you'll need to perform several steps depending on how the cluster was set up. The process may vary slightly based on the platform you used to create the cluster (e.g., a managed service like GKE, EKS, AKS, or a self-hosted cluster with kubeadm, kops, or another tool).
+Below are generic steps you can follow. Please adjust them based on the specifics of your environment:
 
 ## Step 1: Delete Deployments, Services, and Pods
 Use kubectl to delete all deployments, services, and pods in each namespace. Replace namespace-name with the actual namespace names used in your cluster.
