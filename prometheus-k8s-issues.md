@@ -18,3 +18,4 @@ spec:
     ...
 ```
 > If you are using control-plane IP, you need to change livenessProbe and startupProbe host, too.
+> no need to reset or reboot just refresh prometheus and all is well.
