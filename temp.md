@@ -10,4 +10,3 @@ Then you can join any number of worker nodes by running the following on each as
 
 kubeadm join 172.29.28.10:6443 --token 0xvuwq.hc6fvbeubko2god8 \
 	--discovery-token-ca-cert-hash sha256:78714e38d79cebc3946bf285591888c6c099ec6862635442707c68454befb389 
-
