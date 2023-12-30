@@ -2,7 +2,7 @@
 
 ##    Change bind-address (default: 127.0.0.1):
 ```
-$ sudo vi /etc/kubernetes/manifests/kube-controller-manager.yaml
+sudo vi /etc/kubernetes/manifests/kube-controller-manager.yaml
 ```
 ```
 apiVersion: v1
@@ -27,7 +27,7 @@ spec:
 
 ## Set the kube-proxy argument for metric-bind-address
 ```
-$ kubectl edit cm/kube-proxy -n kube-system
+kubectl edit cm/kube-proxy -n kube-system
 ```
 ```
 ...
@@ -36,7 +36,7 @@ metricsBindAddress: 0.0.0.0:10249
 ...
 ```
 ```
-$ kubectl delete pod -l k8s-app=kube-proxy -n kube-system
+kubectl delete pod -l k8s-app=kube-proxy -n kube-system
 ```
 > every kube-proxy pod will be delete no further jobs to do.
 
@@ -45,7 +45,7 @@ $ kubectl delete pod -l k8s-app=kube-proxy -n kube-system
 
 ##    Change bind-address (default: 127.0.0.1):
 ```
-$ sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
+sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
 ```
 ```
 apiVersion: v1
