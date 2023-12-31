@@ -60,7 +60,25 @@ spec:
     - --bind-address=<your control-plane IP or 0.0.0.0>
     ...
 ```
+# ETCD Connection refused:
+
+##    Change bind-address (default: 127.0.0.1):
+```
+sudo vi /etc/kubernetes/manifests/etcd.yaml
+```
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  ...
+spec:
+  containers:
+  - command:
+    - kube-controller-manager
+    ...
+    - --listen-metrics-urls=http://0.0.0.0:2381
+    ...
+```
 > Do it for all of your masters
 > If you are using control-plane IP, you need to change livenessProbe and startupProbe host, too.
 > no need to reset or reboot just refresh prometheus and all is well.
-
