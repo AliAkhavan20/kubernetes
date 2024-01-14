@@ -35,4 +35,7 @@ spec:
             port:
               number: 80
 ```
+```
+kubectl apply -f ingress-nginx.yaml
+```
 ### Change port and domain name based on your needs.
