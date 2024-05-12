@@ -1,0 +1,30 @@
+{
+  "ConnectionStrings": {
+    //"DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=SmsSenderDb;Trusted_Connection=True;MultipleActiveResultSets=true",
+    //"DefaultConnection": "Data Source = 172.168.28.2; Initial Catalog = SM2; Persist Security Info = True; User ID = TAVAKOLI; Password = MT2V@KOL!2023; MultipleActiveResultSets = true;trustservercertificate=true;"
+    "DefaultConnection": "data source=172.18.29.187;initial catalog=SM2;persist security info=true;user id=sa;password=YourStrong@Passw0rd;multipleactiveresultsets=true;TrustServerCertificate=True"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+
+
+  "SmsRequest": {
+    "url": "https://new.payamsms.com/services/rest/index.php",
+    "organization": "sepbattery",
+    "username": "sepbattery",
+    "password": "sepbattery"
+  },
+
+  "Jwt": {
+    "Issuer": "test",
+    "Audience": "test",
+    "SecretKey": "This_is_a_Test_Key_For_Sending_Sms",
+    "TokenExpires": 30
+  }
+}
