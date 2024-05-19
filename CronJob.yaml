@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: repo-update-checker
+spec:
+  schedule: "*/5 * * * *" # This cron schedule runs every 5 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: repo-update-checker
+            image: your-nexus-repo-checker-image # Replace with your custom image that checks for updates
+            env:
+              - name: NEXUS_REPO_URL
+                value: "http://nexus.yourdomain.com/repository/your-repo/" # Replace with your Nexus repository URL
+              - name: KUBERNETES_DEPLOYMENT_NAME
+                value: "your-deployment" # Replace with your deployment name
+              - name: NAMESPACE
+                value: "default" # Replace with the namespace where your deployment is located
+            command: ["/bin/sh"]
+            args:
+            - -c
+            - |
+              #!/bin/sh
+              # Check if the repository has been updated
+              REPO_UPDATED=$(check_repo_update.sh) # Replace with your script that checks for updates
+              if [ "$REPO_UPDATED" = "true" ]; then
+                # Delete the existing pods
+                kubectl delete pods -l app=${KUBERNETES_DEPLOYMENT_NAME} -n ${NAMESPACE}
+                # Assuming your deployment is set to use the latest image, it will pull the new image automatically
+                # If not, you may need to patch the deployment to use the new image tag
+              fi
+          restartPolicy: OnFailure
